@@ -1,0 +1,231 @@
+﻿-- CREATE DATABASE
+CREATE DATABASE Student1510
+
+-- USE DATABASE
+USE Student1510
+
+--CREATE TABLES
+CREATE TABLE Registration(
+		username		VARCHAR(20)			PRIMARY KEY,
+		password		VARCHAR(30)			NOT NULL,
+		lastname		NVARCHAR(100)		NOT NULL,
+		isAdmin			BIT					DEFAULT 0
+)
+
+CREATE TABLE Product(
+		sku				INT					PRIMARY KEY,
+		name			NVARCHAR(20)		NOT NULL,
+		price			DECIMAL(15,4)		NOT NULL,
+		description		NVARCHAR(50)		NOT NULL,
+		quantity		INT					DEFAULT 0
+)
+
+CREATE TABLE Orders(
+		orderId			INT					IDENTITY(1,1) NOT NULL,
+		orderDetailId	INT					NOT NULL,
+		totalOrders		DECIMAL(15,4)		DEFAULT 0
+)
+
+CREATE TABLE OrderDetail(
+		orderDetailId	INT					NOT NULL,
+		sku				INT					NOT NULL,
+		name			NVARCHAR(20)		NOT NULL,
+		price			DECIMAL(15,4)		NOT NULL,
+		quantity		INT					NOT NULL,
+		total			DECIMAL(15,4)		NOT NULL
+)
+
+
+-- CREATE PROC FOR INCREASING NUMBER IN PRODUCT
+IF OBJECT_ID('INCREASEPRODUCTBYID') IS NOT NULL
+DROP PROC INCREASEPRODUCTBYID
+
+CREATE PROC INCREASEPRODUCTBYID
+					@PRODUCTID			INT,
+					@QUANTITY			INT
+AS
+BEGIN				
+					IF @QUANTITY <= 0
+						BEGIN
+								SET @QUANTITY = 1
+						END
+					IF @PRODUCTID IS NOT NULL
+						BEGIN
+							UPDATE Product
+							SET quantity = (
+												SELECT quantity + @QUANTITY
+												FROM Product
+												WHERE sku LIKE @PRODUCTID
+											)
+							WHERE sku = @PRODUCTID
+						END
+END
+
+-- Dữ liệu
+INSERT INTO dbo.Registration(username, password, lastname, isAdmin) VALUES
+('hutruc','123465','Hu Truc','False'),
+('IA1301','123456','Class IA1301','False'),
+('khanh','kieu123','Khanh Kieu','True'),
+('khanh@Spring','123456','Spring annotation','False'),
+('khanhSpring','123456','Khanh','False'),
+
+INSERT INTO dbo.Product (sku,name,price,description,quantity)
+VALUES
+(1,'Java',500000,'Good',6),
+(2,'OOP',700000,'Not Bad',2),
+(3,'Servlet',900000,'Good',4),
+(4,'JSP',1200000,'Normal',7),
+(5,'NetBeans',300000,'Not impressive',8),
+(6,'TomCat',1200000,'Very good',10),
+(7,'JSTL',30000,'OK',10).
+
+-- CREATE PROC FOR INCREASING NUMBER IN PRODUCT
+IF OBJECT_ID('DECREASEPRODUCTBYID') IS NOT NULL
+DROP PROC DECREASEPRODUCTBYID
+
+CREATE PROC DECREASEPRODUCTBYID
+					@PRODUCTID			INT,
+					@QUANTITY				INT	
+AS
+BEGIN				
+					IF @QUANTITY <= 0
+						BEGIN
+								SET @QUANTITY = 1
+						END
+					IF @PRODUCTID IS NOT NULL
+						BEGIN
+							UPDATE Product
+							SET quantity = (
+												SELECT quantity - @QUANTITY
+												FROM Product
+												WHERE sku LIKE @PRODUCTID
+											)
+							WHERE sku = @PRODUCTID
+						END
+END
+
+-- CREATE PROC FOR UPDATING NUMBER IN PRODUCT
+IF OBJECT_ID('UPDATEPRODUCTBYID') IS NOT NULL
+DROP PROC UPDATEPRODUCTBYID
+CREATE PROC UPDATEPRODUCTBYID
+					@PRODUCTID			INT,
+					@METHOD				NVARCHAR(20),
+					@QUANTITY			INT
+AS
+BEGIN				
+					IF @QUANTITY <= 0
+						BEGIN
+								SET @QUANTITY = 1	 
+						END
+					IF (@PRODUCTID IS NOT NULL) OR (@METHOD IS NOT NULL)
+						BEGIN
+							IF @METHOD LIKE 'ADD'
+								BEGIN
+										EXEC INCREASEPRODUCTBYID @PRODUCTID, @QUANTITY
+								END
+							ELSE 
+								BEGIN
+										EXEC DECREASEPRODUCTBYID @PRODUCTID, @QUANTITY
+								END
+						END
+END
+
+-- PROC FOR GET ALL PRODUCTS
+IF OBJECT_ID('GETPRODUCT') IS NOT NULL
+DROP PROC GETPRODUCT
+
+CREATE PROC GETPRODUCT
+AS
+BEGIN
+			SELECT sku, name, price, description, quantity 
+			FROM Product P
+			WHERE P.quantity > 0
+END
+
+-- PROC FOR INSERT PRODUCT INTO ORDER DETAIL
+IF OBJECT_ID('INSERTORDERDETAIL') IS NOT NULL
+DROP PROC INSERTORDERDETAIL
+
+CREATE PROC INSERTORDERDETAIL
+			@ORDERDETAILID	INT,
+			@SKU			INT,
+			@NAME			NVARCHAR(20),
+			@PRICE			DECIMAL(15,4),
+			@QUANTITY		INT,
+			@TOTAL			DECIMAL(15,4)
+AS
+BEGIN
+			INSERT INTO OrderDetail(orderDetailId,sku, name, price, quantity, total)
+			VALUES (@ORDERDETAILID,@SKU, @NAME, @PRICE, @QUANTITY, @TOTAL)
+
+			DECLARE @ID INT
+			SET @ID = (
+						SELECT TOP 1 O.orderDetailId
+						FROM Orders O
+						ORDER BY O.orderDetailId DESC
+						)
+			IF (@ID < @ORDERDETAILID) OR (@ID IS NULL)
+				BEGIN
+						INSERT INTO Orders(orderDetailId)
+						VALUES (@ORDERDETAILID)
+				END
+END
+
+-- PROC FOR INSERTING ORDER
+IF OBJECT_ID('INSERTORDERS') IS NOT NULL
+DROP PROC INSERTORDERS
+
+CREATE PROC INSERTORDERS
+			@ORDERDETAILID	INT,
+			@TOTAL			DECIMAL(15,4)
+AS
+BEGIN
+			INSERT INTO Orders(orderDetailId, totalOrders)
+			VALUES (@ORDERDETAILID, @TOTAL)
+END
+
+-- PROC FOR UPDATING TOTAL IN ORDER
+IF OBJECT_ID('UPDATETOTALINORDER') IS NOT NULL
+DROP PROC UPDATETOTALINORDER
+
+	CREATE PROC UPDATETOTALINORDER
+					@ID			INT
+	AS
+	BEGIN
+			UPDATE Orders
+			SET totalOrders = (
+								SELECT SUM(total)
+								FROM OrderDetail
+								WHERE orderDetailId = @ID
+							)
+			WHERE orderDetailId = @ID
+	END
+
+-- Kiểm chứng 
+EXEC INSERTORDERDETAIL 1,1,'Python',50000,5,250000
+EXEC INSERTORDERDETAIL 1,3,'java',25000,5,125000
+EXEC UPDATETOTALINORDER 1
+SELECT *
+FROM OrderDetail
+SELECT *
+FROM Orders
+
+SELECT SUM(O.total)
+FROM OrderDetail O
+WHERE O.orderDetailId = 1
+
+DROP TABLE Orders
+DROP TABLE OrderDetail
+CREATE TABLE Orders(
+		orderId			INT					IDENTITY(1,1) NOT NULL,
+		orderDetailId	INT					NOT NULL,
+		totalOrders		DECIMAL(15,4)		DEFAULT 0
+)
+CREATE TABLE OrderDetail(
+		orderDetailId	INT					NOT NULL,
+		sku				INT					NOT NULL,
+		name			NVARCHAR(20)		NOT NULL,
+		price			DECIMAL(15,4)		NOT NULL,
+		quantity		INT					NOT NULL,
+		total			DECIMAL(15,4)		NOT NULL
+)
