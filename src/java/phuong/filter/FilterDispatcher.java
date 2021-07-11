@@ -19,6 +19,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  *
@@ -101,6 +102,14 @@ public class FilterDispatcher implements Filter {
             FilterChain chain)
             throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
+        HttpServletResponse res = (HttpServletResponse) response;
+
+        //set headers for responseObj 
+        res.setContentType("text/html;charset=UTF-8");
+        res.setHeader("Cache-Control", "no-cache, no-store"); //HTTP 1.1
+        res.setHeader("Pragma", "no-cache"); //HTTP 1.0
+        res.setDateHeader("Expires", 0); //Proxies
+        
         Throwable problem = null;
         String url = "";
         try {
@@ -109,14 +118,12 @@ public class FilterDispatcher implements Filter {
             String uri = req.getRequestURI();
             String action = uri.substring(uri.lastIndexOf("/") + 1);
             String resource = mapper.get(action);
-            if (uri.indexOf("/js") > 0){
+            if (uri.indexOf("/css") > 0) {
                 chain.doFilter(request, response);
-            }else if (resource.length() > 0) {
+            } else if (resource.length() > 0) {
                 url = resource;
                 RequestDispatcher rq = request.getRequestDispatcher(url);
                 rq.forward(request, response);
-            } else {
-                chain.doFilter(request, response);
             }
         } catch (IOException t) {
             // If an exception is thrown somewhere down the filter chain,
@@ -128,7 +135,7 @@ public class FilterDispatcher implements Filter {
             problem = t;
             log("FilterDispatcher _ServletException" + t.getMessage());
         } finally {
-            
+
         }
 
         doAfterProcessing(request, response);

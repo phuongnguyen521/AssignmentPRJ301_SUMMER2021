@@ -11,8 +11,10 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -27,8 +29,7 @@ import phuong.registration.RegistrationDTO;
  */
 public class SearchServlet extends HttpServlet {
 
-    private final String SEARCH_PAGE = "search.jsp";
-    private final String UPDATE_PAGE = "UpdateRecordServlet";
+    private final String SEARCH_PAGE = "search";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -43,19 +44,19 @@ public class SearchServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         String lastSearchValue = request.getParameter("txtSearchValue");
-        PrintWriter out = response.getWriter();
         String url = SEARCH_PAGE;
         String button = request.getParameter("btAction");
+        HttpSession session = request.getSession();
         try {
             if (lastSearchValue.trim().length() > 0) {
                 RegistrationDAO dao = new RegistrationDAO();
                 dao.searchLastName(lastSearchValue);
                 List<RegistrationDTO> dto = new ArrayList<>();
                 dto = dao.getListDTO();
-                request.setAttribute("SEARCHRESULT", dto);
-                // chinh lai phan nay
+                session.setAttribute("SEARCHRESULT", dto);
+                session.setAttribute("LASTSEARCHVALUE", lastSearchValue);
+                //checking if error password is exsited
                 if (!button.equals("Update")) {
-                    HttpSession session = request.getSession();
                     session.removeAttribute("ERROR_PASS");
                 }
             }
@@ -64,9 +65,10 @@ public class SearchServlet extends HttpServlet {
         } catch (SQLException ex) {
             ex.printStackTrace();
         } finally {
-            RequestDispatcher rq = request.getRequestDispatcher(url);
-            rq.forward(request, response);
-            out.close();
+            ServletContext context = request.getServletContext();
+            Map<String, String> mapper = (Map<String, String>) context.getAttribute("MAP");
+            RequestDispatcher rd = request.getRequestDispatcher(mapper.get(url));
+            rd.forward(request, response);
         }
     }
 

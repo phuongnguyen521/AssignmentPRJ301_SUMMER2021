@@ -7,8 +7,10 @@ package phuong.controller;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Map;
 import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -24,10 +26,10 @@ import phuong.registration.RegistrationEditError;
  */
 public class EditAccountServlet extends HttpServlet {
 
-    private final String EDIT_ACCOUNT_ERROR = "editAccountError.jsp";
-    private final String EDIT_ACCOUNT_JSP = "editAccount.jsp";
-    private final String CONFIRM_PAGE = "confirm.html";
-    private RegistrationEditError errors = new RegistrationEditError();
+    private final String EDIT_ACCOUNT_ERROR = "editError";
+    private final String EDIT_ACCOUNT = "edit";
+    private final String CONFIRM_PAGE = "confirm";
+    private RegistrationEditError errors;
     private RegistrationDAO dao = new RegistrationDAO();
 
     /**
@@ -53,61 +55,42 @@ public class EditAccountServlet extends HttpServlet {
                 if (firsttime == null) {
                     RegistrationDTO dto = setEdittedAccount(username, searchValue);
                     if (dto != null) {
-                        url = EDIT_ACCOUNT_JSP;
-                        request.setAttribute("INFORM", dto);
-                        request.setAttribute("lastSearchValue", searchValue);
-                        RequestDispatcher rq = request.getRequestDispatcher(url);
-                        rq.forward(request, response);
+                        url = EDIT_ACCOUNT;
+                        session.setAttribute("INFORM", dto);
+                        session.setAttribute("lastSearchValue", searchValue);
                     }
                 }
             }
             if (button.equals("Update")) {
+                session.removeAttribute("INFORM");
                 String username = request.getParameter("txtUsernameEdit");
                 String searchValue = request.getParameter("lastSearchValue");
                 String lastname = request.getParameter("txtLastNameEdit");
                 String password = request.getParameter("txtPasswordEdit");
                 String isAdmin = request.getParameter("chkAdminEdit");
-                String confirm = request.getParameter("confirm");
                 boolean role = false;
                 if (isAdmin != null) {
                     role = true;
                 }
                 boolean validation = validateAccount(password, lastname);
+                RegistrationDTO dto = new RegistrationDTO(username, password, lastname, role);
                 if (validation) { //password or lastname is incorrect
-                    RegistrationDTO dto = new RegistrationDTO(username, password, lastname, role);
-                    request.setAttribute("INFORM", dto);
-                    request.setAttribute("lastSearchValue", searchValue);
                     request.setAttribute("EDIT_ERROR", errors);
-                    url = EDIT_ACCOUNT_JSP;
+                    url = EDIT_ACCOUNT;
                 } else { // validation is correct
-                    if (confirm.equals("confirm")) { //if user confirm to change information
-                        RegistrationDTO editAccount = new RegistrationDTO(username, password, lastname, role);
-                        if (dao.updateRecordByEdit(editAccount)) {
-                            url = "search_Account?"
-                                    + "&txtSearchValue="
-                                    + searchValue;
-                            session.removeAttribute("INFORM");
-                        }
-                    } else { //if user do not confirm to change information
-                        RegistrationDTO dto = new RegistrationDTO(username, password, lastname, role);
-                        request.setAttribute("INFORM", dto);
-                        request.setAttribute("lastSearchValue", searchValue);
-                        session.removeAttribute("INFORM");
-                        url = EDIT_ACCOUNT_JSP;
-                    }
+                    session.removeAttribute("EDIT_ERROR");
+                    url = CONFIRM_PAGE;
                 }
+                session.setAttribute("INFORM", dto);
+                request.setAttribute("lastSearchValue", searchValue);
             }
-        } catch (SQLException ex) {
-            log("EditAccountServlet _IOException" + ex.getMessage());
-        } catch (NamingException ex) {
-            log("EditAccountServlet _Naming" + ex.getMessage());
+
         } finally {
-            if (url.contains("&txtSearchValue")) {
-                response.sendRedirect(url);
-            } else {
-                RequestDispatcher rq = request.getRequestDispatcher(url);
-                rq.forward(request, response);
-            }
+            ServletContext context = request.getServletContext();
+            Map<String, String> mapper = (Map<String, String>) context.getAttribute("MAP");
+            String resource = mapper.get(url);
+            RequestDispatcher rq = request.getRequestDispatcher(resource);
+            rq.forward(request, response);
         }
     }
 
@@ -130,6 +113,7 @@ public class EditAccountServlet extends HttpServlet {
 
     private boolean validateAccount(String password, String lastname) {
         boolean foundError = false;
+        errors = new RegistrationEditError();
         if (password.trim().length() < 6 || password.trim().length() > 20) {
             foundError = true;
             errors.setPassswordLengthErr("Password must has length from 6 to 20 chars");

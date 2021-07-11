@@ -1,0 +1,31 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Jul 10, 2021, 8:25:07 PM
+    Author     : DELL
+*/
+@import url("account.css");
+.account_box {
+    margin: 0 auto;
+    height: 150px;
+}
+
+.account_box h3{
+    padding: 20px;
+}
+
+.account_box input[type="submit"]{
+    background-color: #E5E5E5;
+    border: none;
+    border-radius: 10px;
+    height: 30px;
+    width: 80px;
+}
+
+.account_box input[type="submit"]:hover{
+    background-color: #FCA311;
+    color: #FFFFFF;
+}

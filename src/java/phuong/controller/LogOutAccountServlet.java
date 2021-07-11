@@ -6,7 +6,7 @@
 package phuong.controller;
 
 import java.io.IOException;
-import javax.servlet.RequestDispatcher;
+import java.util.Enumeration;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -18,7 +18,9 @@ import javax.servlet.http.HttpSession;
  * @author DELL
  */
 public class LogOutAccountServlet extends HttpServlet {
+
     private final String LOGIN_PAGE = "login";
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -33,11 +35,15 @@ public class LogOutAccountServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         try {
             HttpSession session = request.getSession(false);
-            if (session != null){
-                session.removeAttribute("USERNAME");
-                session.removeAttribute("ERROR_PASS");
+            if (session == null) {
+                return;
+            }// session is end
+            final Enumeration<String> atttributeNames = session.getAttributeNames();
+            while (atttributeNames.hasMoreElements()) {
+                String nextElement = atttributeNames.nextElement();
+                session.removeAttribute(nextElement);
             }
-        } finally{
+        } finally {
             response.sendRedirect(LOGIN_PAGE);
         }
     }

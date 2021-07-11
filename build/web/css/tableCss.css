@@ -1,0 +1,67 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Jul 10, 2021, 6:02:38 PM
+    Author     : DELL
+*/
+.content_table{
+    border-collapse: collapse;
+    margin: 25px 0;
+    font-size: 0.9em;
+    overflow: hidden;
+    margin-left: 20px;
+}
+
+.content_table thead tr{
+    background-color: #14213D;
+    opacity: 0.5;
+    color: #FFFFFF;
+    text-align: left; 
+    font-weight: bold;
+}
+
+.content_table th, td{
+    padding: 12px 15px;
+}
+
+.content_table tbody tr{
+    border-bottom: 1px solid #E5E5E5;
+}
+
+.content_table tbody tr:last-of-type{
+    border-bottom: 2px solid #14213D;
+}
+
+.content_table tbody tr:hover{
+    background-color: #E5E5E5;
+    border-bottom: 1px solid #FCA311;
+}
+
+.content_table tbody tr:last-of-type:hover{
+    background-color: #E5E5E5;
+    border-bottom: 2px solid #FCA311;
+}
+
+.content_table tbody td a {
+    color: #000;
+}
+
+.content_table input[type="submit"]{
+    alignment-adjust: central;
+}
+
+.content_table tbody tr td input[type="submit"]{
+    background-color: #E5E5E5;
+    border: none;
+    border-radius: 10px;
+    height: 30px;
+    width: 80px;
+}
+
+.content_table tbody tr td input[type="submit"]:hover{
+    background-color: #FCA311;
+    color: #FFFFFF;
+}

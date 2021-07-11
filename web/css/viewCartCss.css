@@ -1,0 +1,27 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Jul 10, 2021, 6:45:01 PM
+    Author     : DELL
+*/
+
+.button, .button_Remove{
+    background-color: #E5E5E5;
+    border: none;
+    border-radius: 10px;
+    height: 30px;
+    width: 100px;
+}
+
+.button_Remove:hover, .button:hover{
+    background-color: #FCA311;
+    color: #FFFFFF;
+}
+
+.viewCartEmpty{
+    justify-content: center;
+    padding: 20px;
+}

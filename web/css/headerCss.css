@@ -1,0 +1,72 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Jul 10, 2021, 5:55:16 PM
+    Author     : DELL
+*/
+*{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+/* header */
+header{
+    font-size: 16px;
+    font-weight: 400;
+    background: #14213D;
+    height: 130px;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 auto;
+}
+
+header p{
+    color: #FCA311;
+    font-size: 30px;
+    font-weight: 500;
+}
+
+header li,a{
+    text-decoration: none;
+    color: #FFFFFF;
+    border-radius: 2px;
+    font-size: 16px;
+}
+
+header li:hover,a:hover{
+    background-color: #E5E5E5;
+    color: #FCA311;
+}
+
+.nav_link{
+    list-style: none;
+}
+.nav_link li{
+    display: inline-block;
+    padding: 20px 20px;
+}
+
+.nav_link li a{
+    transition: all 0.3s ease 0s;
+}
+
+.button, .button_LogOut{
+    background-color: #E5E5E5;
+    border: none;
+    border-radius: 10px;
+    height: 30px;
+    width: 100%;
+}
+
+.button_LogOut{
+    width: 80px;
+}
+
+.button:hover, .button_LogOut:hover{
+    background-color: #FCA311;
+    color: #FFFFFF;
+}

@@ -7,24 +7,28 @@ package phuong.controller;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.List;
+import java.util.Map;
 import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import phuong.product.ProductDAO;
-import phuong.product.ProductDTO;
-import phuong.product.ProductErrors;
+import javax.servlet.http.HttpSession;
+import phuong.registration.RegistrationDAO;
 
 /**
  *
  * @author DELL
  */
-public class shoppingServlet extends HttpServlet {
+public class DeleteProcesServlet extends HttpServlet {
 
-    private final String SHOPPING_PAGE = "shoppingOnline.jsp";
+    private final String CONFIRM_DELETE = "confirmDelete.jsp";
+    private final String LOGOUT_SERVLET = "logOutAccount";
+    private final String DELETE_ERROR = "deleteError.html";
+    private String username = "";
+    private String searchValue = "";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -38,31 +42,42 @@ public class shoppingServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        String url = SHOPPING_PAGE;
-        List<ProductDTO> list = null;
-        ProductErrors errors = null;
+        HttpSession session = request.getSession();
+        String username = request.getParameter("pk");
+        String searchValue = request.getParameter("lastSearchValue");
+        String button = request.getParameter("btAction");
+        String url = DELETE_ERROR;
         try {
-            ProductDAO dao = new ProductDAO();
-            dao.loadProduct();
-            list = dao.getProduct();
-            request.setAttribute("PRODUCT_LIST", list);
+            if (button == null) {
+                url = CONFIRM_DELETE;
+                session.setAttribute("USERNAMEDELETE", username);
+                session.setAttribute("SEARCHVALUE", searchValue);
+            } else {
+                if (button.equals("Confirm")) {
+                    RegistrationDAO dao = new RegistrationDAO();
+                    boolean result = dao.deleteRecord(username);
+                    if (result) {
+                        url = LOGOUT_SERVLET;
+                    }
+                }
+                if (button.equals("Cancel")) {
+                    url = "searchAccount?"
+                            + "&txtSearchValue="
+                            + searchValue;
+                    session.removeAttribute("USERNAMEDELETE");
+                    session.removeAttribute("SEARCHVALUE");
+                }
+            }
         } catch (NamingException ex) {
-            log("ShoppingServlet _Naming" + ex.getMessage());
-            if (errors == null){
-                errors = new ProductErrors();
-            }
-            errors.setNamingError("Error about Naming");
-            request.setAttribute("SHOPPING_ERROR", errors);
+            log("DeleteProcesServlet _Naming" + ex.getMessage());
         } catch (SQLException ex) {
-            log("ShoppingServlet _SQL" + ex.getMessage());
-            if (errors == null){
-                errors = new ProductErrors();
-            }
-            errors.setNamingError("Error about SQL");
-            request.setAttribute("SHOPPING_ERROR", errors);
+            log("DeleteProcesServlet _SQL" + ex.getMessage());
         } finally {
-            RequestDispatcher rd = request.getRequestDispatcher(url);
-            rd.forward(request, response);
+            if (url.contains("html") || url.contains("jsp")) {
+                RequestDispatcher rd = request.getRequestDispatcher(url);
+                rd.forward(request, response);
+            }
+            response.sendRedirect(url);
         }
     }
 

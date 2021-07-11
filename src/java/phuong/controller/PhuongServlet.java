@@ -7,11 +7,15 @@ package phuong.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
+import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import phuong.registration.RegistrationDAO;
 
 /**
  *
@@ -19,8 +23,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class PhuongServlet extends HttpServlet {
 
-    private final String LOGIN_PAGE = "login.html";
-    private final String PROCESS_REQUEST_SERVLET = "ProcessRequestServlet";
+    private final String LOGIN_PAGE = "login";
+    private final String LOGIN_SERVLET = "loginServlet";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -38,11 +42,28 @@ public class PhuongServlet extends HttpServlet {
         String button = request.getParameter("btAction");
         try {
             if (button == null) {
-                url = PROCESS_REQUEST_SERVLET;
+                Cookie[] cookies = request.getCookies();
+                if (cookies != null) {
+                    for (Cookie cooky : cookies) {
+                        String username = cooky.getName();
+                        String password = cooky.getValue();
+                        RegistrationDAO dao = new RegistrationDAO();
+                        String result = dao.checkLogin(username, password);
+                        if (!result.isEmpty()){
+                            url = LOGIN_SERVLET;
+                            break;
+                        } // end if 
+                    } // end traversal of cookies
+                } // if cookies is existed
+            } else if (button.equals("Login")){
+                url = LOGIN_SERVLET;
             }
+        } catch (NamingException ex) {
+            log("PhuongServlet _Naming" + ex.getMessage());
+        } catch (SQLException ex) {
+            log("PhuongServlet _SQL" + ex.getMessage());
         } finally {
-            RequestDispatcher rd = request.getRequestDispatcher(url);
-            rd.forward(request, response);
+            response.sendRedirect(url);
         }
     }
 

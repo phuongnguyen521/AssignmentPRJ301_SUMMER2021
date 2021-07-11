@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
 import javax.naming.NamingException;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -43,7 +44,7 @@ public class DeleteRecordServlet extends HttpServlet {
             RegistrationDAO dao = new RegistrationDAO();
             boolean result = dao.deleteRecord(username);
             if (result) {
-                url = "search_Account?"
+                url = "searchAccount?"
                         + "&txtSearchValue="
                         + searchValue;
             }
@@ -52,7 +53,12 @@ public class DeleteRecordServlet extends HttpServlet {
         } catch (SQLException ex) {
             ex.printStackTrace();
         } finally {
-            response.sendRedirect(url);
+            if (url.contains("&txtSearchValue")){
+                response.sendRedirect(url);
+            } else {
+                RequestDispatcher rd = request.getRequestDispatcher(url);
+                rd.forward(request, response);
+            }
             out.close();
         }
     }

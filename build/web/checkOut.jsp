@@ -12,13 +12,22 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Check Out</title>
+        <link href="css/tableCss.css" rel="stylesheet" type="text/css"/>
+        <link href="css/shoppingCss.css" rel="stylesheet" type="text/css"/>
     </head>
     <body>
+        <jsp:include page="header.jsp"/>
         <h1>Your order include</h1>
         <c:set var="cart" value="${sessionScope.CART.items}"/>
+        <c:if test="${empty cart}">
+            You haven't added any products into your cart. 
+            Please come back when your cart having products.
+            <a href="shoppingServlet">Shopping Online Page</a></br>
+            <a href="login">Login Page</a>
+        </c:if>
         <c:if test="${not empty cart}">
             <c:set var="totalOrder" value="${0}"/>
-            <table border="1">
+            <table border="1" class="content_table">
                 <thead>
                     <tr>
                         <th>No.</th>
@@ -67,20 +76,21 @@
                             Total Order
                         </td>
                         <td>
-                             <f:formatNumber var="totalOrder" 
-                                                value="${totalOrder}" 
-                                                minIntegerDigits="0"/>
+                            <f:formatNumber var="totalOrder" 
+                                            value="${totalOrder}" 
+                                            minIntegerDigits="0"/>
                             ${totalOrder}
                         </td>
                     </tr>
                     <tr>
                         <td colspan="4">
-                            <a href="shopping_servlet">Add more items to cart</a> 
+                            <a href="shoppingServlet">Add more items to cart</a> 
                         </td>
                         <td>
                             <input type="submit" 
                                    value="Check Out" 
-                                   name="btAction" />
+                                   name="btAction" 
+                                   class="button"/>
                         </td>
                     </tr>
                 </form>

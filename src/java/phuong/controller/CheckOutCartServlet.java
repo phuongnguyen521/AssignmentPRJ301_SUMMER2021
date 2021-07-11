@@ -28,7 +28,7 @@ import phuong.product.ProductDTO;
 public class CheckOutCartServlet extends HttpServlet {
 
     private final String CHECK_OUT = "checkOut";
-    private final String SHOPPING_ONLINE = "shopping_servlet";
+    private final String SHOPPING_ONLINE = "shoppingServlet";
 
     private boolean createOrderDetail(CartObj cart, int orderDetailId) {
         boolean result = true;

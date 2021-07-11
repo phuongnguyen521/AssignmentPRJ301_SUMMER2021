@@ -9,18 +9,25 @@ and open the template in the editor.
         <title>Create New Account</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="css/account.css" rel="stylesheet" type="text/css"/>
     </head>
     <body>
-        <h1>Create New Account</h1>
-        <form action="create_Account" method="POST">
-            Username* <input type="text" name="txtUsername" value="" />(6 - 20 chars)<br/>
-            Password* <input type="password" name="txtPassword" value="" />(6 - 30 chars)<br/>
-            Confirm <input type="password" name="txtConfirm" value="" /><br/>
-            Full name* <input type="text" name="txtFullname" value="" />(2 - 50 chars)<br/>
-            <input type="submit" value="Create New Account" name="btAction" />
-            <input type="submit" value="Reset" />
-        </form>
-        <a href="login">Login Page</a><br/>
-        <a href="shopping_servlet">Shopping Online</a>
+        <div class="account_box">
+            <h1>Create New Account</h1>
+            <form action="createAccount" method="POST">
+                <p>Username*(6 - 20 chars)</p> <input type="text" name="txtUsername" value="" 
+                                                      placeholder="Enter username"/><br/>
+                <p>Password*(6 - 30 chars)</p> <input type="password" name="txtPassword" value="" 
+                                                       placeholder="Enter password"/><br/>
+                <p>Confirm</p> <input type="password" name="txtConfirm" value="" 
+                                      placeholder="Enter confirm password"/><br/>
+                <p>Full name* (2 - 50 chars)</p><input type="text" name="txtFullname" value="" 
+                                                       placeholder="Enter full name"/><br/>
+                <input type="submit" value="Create New Account" name="btAction" />
+                <input type="submit" value="Reset" />
+            </form>
+            <a href="login">Login Page</a><br/>
+            <a href="shoppingServlet">Shopping Online</a>
+        </div>
     </body>
 </html>

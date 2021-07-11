@@ -36,7 +36,7 @@ public class ProcessCartServlet extends HttpServlet {
         String url = VIEW_CART;
         String button = request.getParameter("btAction");
         try {
-            if (button.equals("Remove Items From Cart")){
+            if (button.equals("Remove Items")){
                 url = REMOVE_ITEMS_FROM_CART;
             } else if (button.equals("Check Out")){
                 url = CHECK_OUT;

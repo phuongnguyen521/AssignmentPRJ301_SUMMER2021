@@ -7,8 +7,10 @@ package phuong.controller;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Map;
 import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -22,8 +24,9 @@ import phuong.registration.RegistrationDAO;
  */
 public class CreateAccountServlet extends HttpServlet {
 
-    private final String LOGIN_PAGE = "login.html";
-    private final String CREATE_ACCOUNT_PAGE = "createNewAccount.jsp";
+    private final String LOGIN_PAGE = "login";
+    private final String CREATE_ACCOUNT_PAGE_JSP = "createNewAccountJsp";
+    private final String CREATE_ACCOUNT_PAGE = "createNewAccount";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -37,50 +40,56 @@ public class CreateAccountServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        String url = CREATE_ACCOUNT_PAGE;
+        String url = CREATE_ACCOUNT_PAGE_JSP;
         String username = request.getParameter("txtUsername");
         String password = request.getParameter("txtPassword");
         String confirm = request.getParameter("txtConfirm");
         String fullname = request.getParameter("txtFullname");
-
+        String button = request.getParameter("btAction");
         boolean foundErr = false;
         RegistrationCreateError errors = new RegistrationCreateError();
 
         try {
-            if (username.trim().length() < 6 || username.trim().length() > 20) {
-                errors.setUsernameLengthErr("Username length has 6 - 20 chars");
-                foundErr = true;
-            }
-            if (password.trim().length() < 6 || password.trim().length() > 30) {
-                errors.setPasswordLengthErr("Password length has 6 - 30 chars");
-                foundErr = true;
-            } else if (!confirm.trim().equals(password.trim())) {
-                errors.setConfirmNotMatch("Confirm does not match password");
-                foundErr = true;
-            }
-            if (fullname.trim().length() < 2 || fullname.trim().length() > 50) {
-                errors.setFullnameLengthErr("Fullname has length 2 - 50");
-                foundErr = true;
-            }
-
-            if (foundErr) {
-                request.setAttribute("INSERT_ERRORS", errors);
+            if (button == null || button.equals("Reset")){
+                url = CREATE_ACCOUNT_PAGE;
             } else {
-                RegistrationDAO dao = new RegistrationDAO();
-                boolean result = dao.createNewAccount(username, password, fullname, false);
-                if (result) {
-                    url = LOGIN_PAGE;
+                if (username.trim().length() < 6 || username.trim().length() > 20) {
+                    errors.setUsernameLengthErr("Username length has 6 - 20 chars");
+                    foundErr = true;
+                }
+                if (password.trim().length() < 6 || password.trim().length() > 30) {
+                    errors.setPasswordLengthErr("Password length has 6 - 30 chars");
+                    foundErr = true;
+                } else if (!confirm.trim().equals(password.trim())) {
+                    errors.setConfirmNotMatch("Confirm does not match password");
+                    foundErr = true;
+                }
+                if (fullname.trim().length() < 2 || fullname.trim().length() > 50) {
+                    errors.setFullnameLengthErr("Fullname has length 2 - 50");
+                    foundErr = true;
+                }
+
+                if (foundErr) {
+                    request.setAttribute("INSERT_ERRORS", errors);
+                } else {
+                    RegistrationDAO dao = new RegistrationDAO();
+                    boolean result = dao.createNewAccount(username, password, fullname, false);
+                    if (result) {
+                        url = LOGIN_PAGE;
+                    }
                 }
             }
         } catch (SQLException ex) {
             errors.setUsernameIsExisted(username + " is existed");
             request.setAttribute("INSERT_ERRORS", errors);
             log("CreateRecordServlet _ SQL " + ex.getMessage());
-        }catch(NamingException ex){
+        } catch (NamingException ex) {
             log("CreateRecordServlet _ Class not found" + ex.getMessage());
-        }finally {
-            RequestDispatcher rq = request.getRequestDispatcher(url);
-            rq.forward(request, response);
+        } finally {
+            ServletContext context = request.getServletContext();
+            Map<String, String> mapper = (Map<String, String>) context.getAttribute("MAP");
+            RequestDispatcher rd = request.getRequestDispatcher(mapper.get(url));
+            rd.forward(request, response);
         }
     }
 

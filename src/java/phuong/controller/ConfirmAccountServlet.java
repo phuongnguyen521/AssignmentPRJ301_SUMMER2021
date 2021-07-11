@@ -7,22 +7,26 @@ package phuong.controller;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.Map;
 import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import phuong.registration.RegistrationDAO;
+import phuong.registration.RegistrationDTO;
 
 /**
  *
  * @author DELL
  */
-public class ProcessRequestServlet extends HttpServlet {
-    private final String LOGIN_PAGE = "login.html";
-    private final String LOGIN_SERVLET = "LoginServlet";
+public class ConfirmAccountServlet extends HttpServlet {
+
+    private final String EDIT_ACCOUNT = "edit";
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -35,33 +39,40 @@ public class ProcessRequestServlet extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
+        String url = EDIT_ACCOUNT;
+        HttpSession session = request.getSession();
+        RegistrationDTO dto = (RegistrationDTO) session.getAttribute("INFORM");
+        String username = dto.getUsername();
         String button = request.getParameter("btAction");
-        String url = LOGIN_PAGE;
+        String searchValue = (String) session.getAttribute("lastSearchValue");
         try {
-            if (button == null) {
-                Cookie[] cookies = request.getCookies();
-                if (cookies != null) {
-                    for (Cookie cooky : cookies) {
-                        String username = cooky.getName();
-                        String password = cooky.getValue();
-                        RegistrationDAO dao = new RegistrationDAO();
-                        String result = dao.checkLogin(username, password);
-                        if (!result.isEmpty()){
-                            url = LOGIN_SERVLET;
-                            break;
-                        }
-                    }
+            if (button.equals("Confirm")) {
+                RegistrationDAO dao = new RegistrationDAO();
+                if (dao.updateRecordByEdit(dto)) {
+                    url = "searchAccount?"
+                            + "&txtSearchValue="
+                            + searchValue;
+                    session.removeAttribute("INFORM");
+                    session.removeAttribute("EDIT_ERROR");
                 }
-            } else if (button.equals("Login")){
-                url = LOGIN_SERVLET;
+            } else if (button.equals("Cancel")) {
+                request.setAttribute("INFORM", dto);
+                request.setAttribute("lastSearchValue", searchValue);
             }
-        } catch (NamingException ex) {
-            log("PhuongServlet _Naming" + ex.getMessage());
         } catch (SQLException ex) {
-            log("PhuongServlet _SQL" + ex.getMessage());
+            log("EditAccountServlet _IOException" + ex.getMessage());
+        } catch (NamingException ex) {
+            log("EditAccountServlet _Naming" + ex.getMessage());
         } finally {
-            RequestDispatcher rd = request.getRequestDispatcher(url);
-            rd.forward(request, response);
+            if (url.contains("&txtSearchValue")) {
+                response.sendRedirect(url);
+            } else {
+                ServletContext context = request.getServletContext();
+                Map<String, String> mapper = (Map<String, String>) context.getAttribute("MAP");
+                String resource = mapper.get(url);
+                RequestDispatcher rq = request.getRequestDispatcher(resource);
+                rq.forward(request, response);
+            }
         }
     }
 

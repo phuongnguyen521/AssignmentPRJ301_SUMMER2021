@@ -9,16 +9,21 @@ and open the template in the editor.
         <title>Login Page</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="css/loginCss.css" type="text/css"/>
     </head>
     <body>
-        <h1>Login Page</h1>
-        <form action="processRequest" method="POST">
-            Username <input type="text" name="txtUsername" value="" /><br/>
-            Password <input type="password" name="txtPassword" value="" /><br/>
-            <input type="submit" value="Login" name="btAction" />
-            <input type="reset" value="Reset" />
-        </form>
-        <a href="createNewAccount">Click here to Sign Up</a><br/>
-        <a href="shopping_servlet">Shopping now!!!</a>
+        <div class = "login_box">
+            <h1>Login Page</h1>
+            <form action="loginServlet" method="POST">
+                <p>Username</p> 
+                <input type="text" name="txtUsername" value="" placeholder="Enter username"/><br/>
+                <p>Password </p>
+                <input type="password" name="txtPassword" value="" placeholder="Enter password"/><br/>
+                <input type="submit" value="Login" name="btAction" />
+                <input type="reset" value="Reset" />
+            </form>
+            <a href="createNewAccount">Create new account</a><br/>
+            <a href="shoppingServlet">Shopping online</a>
+        </div>
     </body>
 </html>

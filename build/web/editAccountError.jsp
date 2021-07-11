@@ -12,11 +12,10 @@
         <title>Edit Account Error Page</title>
     </head>
     <body>
-        <c:set var="nameUserLogin" value="${sessionScope.USERNAME}"/>
         <font color="red">
-        Welcome ${nameUserLogin}
+        Welcome ${sessionScope.USERNAME}
         </font>
-        <form action="logOut_Account">
+        <form action="logOutAccount">
             <input type="submit" value="Sign Out" name="btAction" />
         </form>
         <h1>Edit Account Error Page</h1>
@@ -25,6 +24,6 @@
                 Cannot Edit Account
             </font>
         </h2>
-        <a href="search_Account">Click here to return Search Page</a>
+        <a href="searchAccount">Click here to return Search Page</a>
     </body>
 </html>

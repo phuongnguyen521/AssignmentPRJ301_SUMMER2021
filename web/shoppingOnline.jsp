@@ -12,15 +12,20 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Shopping Online Page</title>
+        <link href="css/tableCss.css" rel="stylesheet" type="text/css"/>
+        <link href="css/shoppingCss.css" rel="stylesheet" type="text/css"/>
     </head>
     <body>
-        <a href="login">Login Page</a>
+        <jsp:include page="header.jsp"/>
         <h1>Shopping Online Page</h1>
         <c:set var="ERROR" value="${requestScope.SHOPPING_ERROR}"/>
         <c:if test="${empty ERROR}">
             <c:set var="LIST" value="${requestScope.PRODUCT_LIST}"/>
+            <c:if test="${empty LIST}">
+                Sorry, shop has nothing to display at present. 
+            </c:if>
             <c:if test="${not empty LIST}">
-                <table border="1">
+                <table border="1" class="content_table">
                     <thead>
                         <tr>
                             <th>No.</th>
@@ -33,7 +38,7 @@
                     </thead>
                     <tbody>
                         <c:forEach var="list" items="${LIST}" varStatus="counter">
-                        <form action="addItemsToCart_servlet">
+                        <form action="addItemsToCartServlet">
                             <tr>
                                 <td>
                                     ${counter.count}
@@ -63,8 +68,9 @@
                     </c:forEach>
                 </tbody>
             </table>
-            <form action="viewCart_servlet">
-                <input type="submit" value="View Your Cart" name="btAction" />
+            <form action="viewCartServlet">
+                <input type="submit" value="View Your Cart" name="btAction" 
+                       class="button_shopping"/>
             </form>
         </c:if>
     </c:if>

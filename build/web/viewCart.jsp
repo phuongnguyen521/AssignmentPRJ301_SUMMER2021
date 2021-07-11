@@ -11,19 +11,21 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="stylesheet" href="css/tableCss.css" type="text/css"/>
+        <link rel="stylesheet" href="css/viewCartCss.css" type="text/css"/>
         <title>View Cart Page</title>
     </head>
     <body>
+        <jsp:include page="header.jsp"/>
         <c:set var="cart" value="${sessionScope.CART.items}"/>
         <c:if test="${empty cart}">
-            <h1>Your Cart is empty</h1>
-            <a href="shopping_servlet">
-                Click here to return Shopping Online Page</a></br>
-            <a href="login">Click here to return Login Page</a>
+            <div class="viewCartEmpty">
+                <h1>Your Cart is empty</h1>
+            </div>
         </c:if>
         <c:if test="${not empty cart}">
             <h1>Your cart</h1>
-            <table border="1">
+            <table border="1" class="content_table">
                 <thead>
                     <tr>
                         <th>No.</th>
@@ -65,17 +67,18 @@
                     </c:forEach>
                     <tr>
                         <td colspan="4">
-                            <a href="shopping_servlet">Add more items to cart</a>
+                            <a href="shoppingServlet">Add more items to cart</a>
                         </td>
                         <td>
                             <input type="submit" 
-                                   value="Remove Items From Cart" 
-                                   name="btAction" />
+                                   value="Remove Items" 
+                                   name="btAction"
+                                   class="button_Remove"/>
                         </td>
                         <td>
                             <input type="submit" 
                                    value="Check Out" 
-                                   name="btAction" />
+                                   name="btAction"/>
                         </td>
                     </tr>
                 </form>

@@ -23,7 +23,7 @@ import phuong.product.ProductDAO;
  */
 public class RemoveItemsFromCartServlet extends HttpServlet {
 
-    private final String VIEW_CART = "viewCart.jsp";
+    private final String VIEW_CART = "viewCart";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -65,8 +65,7 @@ public class RemoveItemsFromCartServlet extends HttpServlet {
         } catch (SQLException ex) {
             log("RemoveItemsFromCart _SQL" + ex.getMessage());
         } finally {
-            RequestDispatcher rd = request.getRequestDispatcher(url);
-            rd.forward(request, response);
+            response.sendRedirect(url);
         }
     }
 

@@ -26,7 +26,6 @@ public class AddItemsToCartServlet extends HttpServlet {
 
     private final String SHOPPING_ONLINE_ERROR = "shoppingOnlineError.html";
     private final String SHOPPING_ONLINE = "shoppingServlet";
-    private final String VIEW_CART = "viewCart.jsp";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>

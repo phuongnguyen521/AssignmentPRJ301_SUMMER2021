@@ -50,7 +50,7 @@
     </servlet>
     <servlet>
         <servlet-name>shoppingServlet</servlet-name>
-        <servlet-class>phuong.controller.shoppingServlet</servlet-class>
+        <servlet-class>phuong.controller.ShoppingServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>AddItemsToCartServlet</servlet-name>
@@ -65,16 +65,20 @@
         <servlet-class>phuong.controller.RemoveItemsFromCartServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>ProcessCartServlet</servlet-name>
-        <servlet-class>phuong.controller.ProcessCartServlet</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>CheckOutCartServlet</servlet-name>
         <servlet-class>phuong.controller.CheckOutCartServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>ProcessRequestServlet</servlet-name>
-        <servlet-class>phuong.controller.ProcessRequestServlet</servlet-class>
+        <servlet-name>ProcessCartServlet</servlet-name>
+        <servlet-class>phuong.controller.ProcessCartServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ConfirmAccountServlet</servlet-name>
+        <servlet-class>phuong.controller.ConfirmAccountServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>DeleteProcesServlet</servlet-name>
+        <servlet-class>phuong.controller.DeleteProcesServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>LoginServlet</servlet-name>
@@ -129,16 +133,20 @@
         <url-pattern>/RemoveItemsFromCartServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>ProcessCartServlet</servlet-name>
-        <url-pattern>/ProcessCartServlet</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>CheckOutCartServlet</servlet-name>
         <url-pattern>/CheckOutCartServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>ProcessRequestServlet</servlet-name>
-        <url-pattern>/ProcessRequestServlet</url-pattern>
+        <servlet-name>ProcessCartServlet</servlet-name>
+        <url-pattern>/ProcessCartServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ConfirmAccountServlet</servlet-name>
+        <url-pattern>/ConfirmAccountServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DeleteProcesServlet</servlet-name>
+        <url-pattern>/DeleteProcesServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

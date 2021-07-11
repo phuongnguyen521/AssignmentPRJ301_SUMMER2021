@@ -23,8 +23,8 @@ import phuong.registration.RegistrationDAO;
  */
 public class LoginServlet extends HttpServlet {
 
-    private final String INVALID_PAGE = "invalid.html";
-    private final String SEARCH_PAGE = "search.jsp";
+    private final String INVALID_PAGE = "invalid";
+    private final String SEARCH_PAGE = "search";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -46,18 +46,20 @@ public class LoginServlet extends HttpServlet {
             String result = dao.checkLogin(username, password);
             if (!result.isEmpty()) {
                 url = SEARCH_PAGE;
-                Cookie cookie = new Cookie(username, password);
-                response.addCookie(cookie);
                 HttpSession session = request.getSession();
                 session.setAttribute("USERNAME", result);
-            }
+                
+                //create account cookie
+                Cookie cookie = new Cookie(username, password);
+                cookie.setMaxAge(-1); // cookie exists until close browser
+                response.addCookie(cookie);
+            } // end result is existed
         } catch (NamingException ex) {
-            ex.printStackTrace();
+            log("LoginServlet _Naming" + ex.getMessage());
         } catch (SQLException ex) {
-            ex.printStackTrace();
+            log("LoginServlet _SQL" + ex.getMessage());
         } finally {
-            RequestDispatcher rq = request.getRequestDispatcher(url);
-            rq.forward(request, response);
+            response.sendRedirect(url);
         }
     }
 

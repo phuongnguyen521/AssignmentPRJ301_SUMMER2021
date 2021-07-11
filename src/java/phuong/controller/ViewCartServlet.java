@@ -47,7 +47,12 @@ public class ViewCartServlet extends HttpServlet {
                 session.setAttribute("CART", cart);
             }
         } finally{
-            response.sendRedirect(url);
+            if (url.contains("html")){
+                RequestDispatcher rd = request.getRequestDispatcher(url);
+                rd.forward(request, response);
+            } else {
+                response.sendRedirect(url);
+            }
         }
     }
 

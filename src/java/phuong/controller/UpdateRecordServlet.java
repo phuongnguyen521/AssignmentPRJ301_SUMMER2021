@@ -66,7 +66,7 @@ public class UpdateRecordServlet extends HttpServlet {
                 session.removeAttribute("ERROR_PASS");
             }
             if (result) {
-                urlRewriting = "search_Account?"
+                urlRewriting = "searchAccount?"
                         + "&txtSearchValue="
                         + searchValue;
             }
