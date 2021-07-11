@@ -30,7 +30,7 @@ public class CheckOutCartServlet extends HttpServlet {
     private final String CHECK_OUT = "checkOut";
     private final String SHOPPING_ONLINE = "shoppingServlet";
 
-    private boolean createOrderDetail(CartObj cart, int orderDetailId) {
+    private boolean createOrderDetail(CartObj cart, int orderDetailId, String username) {
         boolean result = true;
         OrderDetailsDAO dao = new OrderDetailsDAO();
         Set<Integer> set = cart.getItems().keySet();
@@ -38,7 +38,7 @@ public class CheckOutCartServlet extends HttpServlet {
             for (Integer sku : set) {
                 ProductDTO dto = cart.getProductFromCart(sku);
                 if (dto != null) {
-                    result = dao.checkOutOrder(dto, orderDetailId);
+                    result = dao.checkOutOrder(dto, orderDetailId, username);
                     if (result == false) {
                         break;
                     }
@@ -69,6 +69,10 @@ public class CheckOutCartServlet extends HttpServlet {
         try {
             if (button.equals("Check Out")) {
                 HttpSession session = request.getSession(false);
+                String username = (String) session.getAttribute("USERNAME");
+                if (username == null) {
+                    username = "GUEST";
+                }
                 CartObj cart = (CartObj) session.getAttribute("CART");
                 if (cart != null) {
                     OrderDetailsDAO dao = new OrderDetailsDAO();
@@ -78,7 +82,7 @@ public class CheckOutCartServlet extends HttpServlet {
                     } else {
                         orderDetailId += 1;
                     }
-                    boolean result = createOrderDetail(cart, orderDetailId);
+                    boolean result = createOrderDetail(cart, orderDetailId, username);
                     result = dao.updateTotalInOrders(orderDetailId);
                     if (result) {
                         session.setAttribute("CART", null);

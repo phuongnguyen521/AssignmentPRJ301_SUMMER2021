@@ -16,7 +16,7 @@
         <title>View Cart Page</title>
     </head>
     <body>
-        <jsp:include page="header.jsp"/>
+        <jsp:include page="header.jsp" flush="true"/>
         <c:set var="cart" value="${sessionScope.CART.items}"/>
         <c:choose>
             <c:when test="${not empty cart}">
@@ -55,9 +55,11 @@
                                     ${value.getQuantity()}
                                 </td>
                                 <td>
-                                    <input type="checkbox" 
-                                           name="chkItems" 
-                                           value="${items.key}" />
+                                    <div class="checkboxCart">
+                                        <input type="checkbox" 
+                                               name="chkItems" 
+                                               value="${items.key}" />
+                                    </div>
                                 </td>
                             </tr>
                         </c:forEach>
@@ -71,7 +73,7 @@
                                        name="btAction"
                                        class="button_Remove"/>
                             </td>
-                            <td>
+                            <td colspan="2">
                                 <input type="submit" 
                                        value="Check Out" 
                                        name="btAction"/>
@@ -83,8 +85,8 @@
         </c:when>
         <c:otherwise>
             <div class="viewCartEmpty">
-            <h1>Your Cart is empty</h1>
-        </div>
+                <h1>Your Cart is empty</h1>
+            </div>
         </c:otherwise>
     </c:choose>
 </body>

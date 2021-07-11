@@ -23,7 +23,8 @@ CREATE TABLE Product(
 CREATE TABLE Orders(
 		orderId			INT					IDENTITY(1,1) NOT NULL,
 		orderDetailId	INT					NOT NULL,
-		totalOrders		DECIMAL(15,4)		DEFAULT 0
+		totalOrders		DECIMAL(15,4)		DEFAULT 0,
+		customerName	NVARCHAR(30)		DEFAULT 'GUEST'
 )
 
 CREATE TABLE OrderDetail(
@@ -152,7 +153,8 @@ CREATE PROC INSERTORDERDETAIL
 			@NAME			NVARCHAR(20),
 			@PRICE			DECIMAL(15,4),
 			@QUANTITY		INT,
-			@TOTAL			DECIMAL(15,4)
+			@TOTAL			DECIMAL(15,4),
+			@CUSTOMERNAME	NVARCHAR(30)
 AS
 BEGIN
 			INSERT INTO OrderDetail(orderDetailId,sku, name, price, quantity, total)
@@ -166,8 +168,16 @@ BEGIN
 						)
 			IF (@ID < @ORDERDETAILID) OR (@ID IS NULL)
 				BEGIN
-						INSERT INTO Orders(orderDetailId)
-						VALUES (@ORDERDETAILID)
+						IF 	@CUSTOMERNAME NOT LIKE 'GUEST'
+							BEGIN
+									INSERT INTO dbo.Orders(orderDetailId, customerName)
+									VALUES (@ORDERDETAILID, @CUSTOMERNAME)
+							END
+						ELSE 
+							BEGIN
+									INSERT INTO dbo.Orders(orderDetailId)
+									VALUES (@ORDERDETAILID)
+							END
 				END
 END
 
@@ -202,8 +212,10 @@ DROP PROC UPDATETOTALINORDER
 	END
 
 -- Kiểm chứng 
-EXEC INSERTORDERDETAIL 1,1,'Python',50000,5,250000
-EXEC INSERTORDERDETAIL 1,3,'java',25000,5,125000
+EXEC INSERTORDERDETAIL 1,1,'Python',50000,5,250000, 'GUEST'
+EXEC INSERTORDERDETAIL 1,3,'java',25000,5,125000, 'GUEST'
+EXEC INSERTORDERDETAIL 1,1,'Python',50000,5,250000, 'AN'
+EXEC INSERTORDERDETAIL 1,3,'java',25000,5,125000, 'AN'
 EXEC UPDATETOTALINORDER 1
 SELECT *
 FROM OrderDetail
@@ -219,7 +231,8 @@ DROP TABLE OrderDetail
 CREATE TABLE Orders(
 		orderId			INT					IDENTITY(1,1) NOT NULL,
 		orderDetailId	INT					NOT NULL,
-		totalOrders		DECIMAL(15,4)		DEFAULT 0
+		totalOrders		DECIMAL(15,4)		DEFAULT 0,
+		customerName	NVARCHAR(30)		DEFAULT 'GUEST'
 )
 CREATE TABLE OrderDetail(
 		orderDetailId	INT					NOT NULL,

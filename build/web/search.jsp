@@ -15,7 +15,7 @@
         <link href="css/tableCss.css" rel="stylesheet" type="text/css">
     </head>
     <body>
-        <jsp:include page="header.jsp"/>
+        <jsp:include page="header.jsp" flush="true"/>
         <c:choose>
             <c:when test="${empty sessionScope.USERNAME}">
                 <c:set var="SearchValueResult" value=""/>

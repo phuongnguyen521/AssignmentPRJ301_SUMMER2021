@@ -18,7 +18,7 @@
         <c:if test="${empty sessionScope.USERNAME}">
             <c:set var="INFORM" value="" />
         </c:if>
-        <jsp:include page="header.jsp"/>
+        <jsp:include page="header.jsp" flush="true"/>
         <div class="account_box">
             <h1>Edit Account</h1>
             <form action="editAccount" method="POST">

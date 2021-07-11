@@ -20,7 +20,7 @@ import phuong.utils.DBHelpers;
  */
 public class OrderDetailsDAO implements Serializable {
 
-    public boolean checkOutOrder(ProductDTO dto, int orderDetailId)
+    public boolean checkOutOrder(ProductDTO dto, int orderDetailId, String username)
             throws NamingException, SQLException {
         Connection con = null;
         PreparedStatement stm = null;
@@ -29,7 +29,7 @@ public class OrderDetailsDAO implements Serializable {
         try {
             con = DBHelpers.makeConnection();
             if (con != null) {
-                String sql = "EXEC INSERTORDERDETAIL ?, ?, ?, ?, ?, ?";
+                String sql = "EXEC INSERTORDERDETAIL ?, ?, ?, ?, ?, ?, ?";
                 stm = con.prepareStatement(sql);
                 stm.setInt(1, orderDetailId);
                 stm.setInt(2, dto.getSku());
@@ -38,6 +38,7 @@ public class OrderDetailsDAO implements Serializable {
                 stm.setInt(5, dto.getQuantity());
                 double total = dto.getPrice() * dto.getQuantity();
                 stm.setDouble(6, total);
+                stm.setString(7, username);
                 int row = stm.executeUpdate();
                 if (row > 0){
                     result = true;

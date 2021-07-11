@@ -14,7 +14,7 @@
         <link href="css/confirmCss.css" rel="stylesheet" type="text/css"/>
     </head>
     <body>
-        <jsp:include page="header.jsp"/>
+        <jsp:include page="header.jsp" flush="true"/>
         <div class="account_box">
             <form action="confirmAccount">
                 <h3>Do you want to update this account</h3>

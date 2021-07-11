@@ -16,7 +16,7 @@
         <link href="css/shoppingCss.css" rel="stylesheet" type="text/css"/>
     </head>
     <body>
-        <jsp:include page="header.jsp"/>
+        <jsp:include page="header.jsp" flush="true"/>
         <h1>Shopping Online Page</h1>
         <c:set var="ERROR" value="${requestScope.SHOPPING_ERROR}"/>
         <c:if test="${empty ERROR}">
