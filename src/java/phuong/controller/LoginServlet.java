@@ -25,6 +25,7 @@ public class LoginServlet extends HttpServlet {
 
     private final String INVALID_PAGE = "invalid";
     private final String SEARCH_PAGE = "search";
+    private final String CONFIRM_LOGOUT = "confirmLogOut";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -40,20 +41,25 @@ public class LoginServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         String username = request.getParameter("txtUsername");
         String password = request.getParameter("txtPassword");
+        HttpSession session = request.getSession();
+        String USERNAME = (String) session.getAttribute("USERNAME");
         String url = INVALID_PAGE;
         try {
-            RegistrationDAO dao = new RegistrationDAO();
-            String result = dao.checkLogin(username, password);
-            if (!result.isEmpty()) {
-                url = SEARCH_PAGE;
-                HttpSession session = request.getSession();
-                session.setAttribute("USERNAME", result);
-                
-                //create account cookie
-                Cookie cookie = new Cookie(username, password);
-                cookie.setMaxAge(-1); // cookie exists until close browser
-                response.addCookie(cookie);
-            } // end result is existed
+            if (USERNAME != null) {
+                url = CONFIRM_LOGOUT;
+            } else {
+                RegistrationDAO dao = new RegistrationDAO();
+                String result = dao.checkLogin(username, password);
+                if (!result.isEmpty()) {
+                    url = SEARCH_PAGE;
+                    session.setAttribute("USERNAME", result);
+
+                    //create account cookie
+                    Cookie cookie = new Cookie(username, password);
+                    cookie.setMaxAge(-1); // cookie exists until close browser
+                    response.addCookie(cookie);
+                } // end result is existed
+            }
         } catch (NamingException ex) {
             log("LoginServlet _Naming" + ex.getMessage());
         } catch (SQLException ex) {

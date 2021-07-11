@@ -25,6 +25,8 @@ public class PhuongServlet extends HttpServlet {
 
     private final String LOGIN_PAGE = "login";
     private final String LOGIN_SERVLET = "loginServlet";
+    private final String LOG_OUT = "logOutAccount";
+    private final String SEARCH_PAGE = "search";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -57,7 +59,11 @@ public class PhuongServlet extends HttpServlet {
                 } // if cookies is existed
             } else if (button.equals("Login")){
                 url = LOGIN_SERVLET;
-            }
+            } else if (button.equals("Log Out")){
+                url = LOG_OUT;
+            } else if (button.equals("Search")){
+                url = SEARCH_PAGE;
+            }         
         } catch (NamingException ex) {
             log("PhuongServlet _Naming" + ex.getMessage());
         } catch (SQLException ex) {

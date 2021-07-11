@@ -1,6 +1,7 @@
 =PhuongServlet
 login=login.html
 invalid=invalid.html
+confirmLogOut=confirmLogOut.jsp
 search=search.jsp
 createNewAccount=createNewAccount.html
 createNewAccountJsp=createNewAccount.jsp
@@ -12,6 +13,7 @@ shopping=shoppingOnline.jsp
 viewCart=viewCart.jsp
 checkOut=checkOut.jsp
 updateErr=updateErr.html
+ConfirmLogOut=PhuongServlet
 loginServlet=LoginServlet
 createAccount=CreateAccountServlet
 editAccount=EditAccountServlet

@@ -13,9 +13,6 @@ and open the template in the editor.
     padding-left: 30px;
 }
 
-tbody tr:nth-last-of-type td:nth-last-child{
-    width: 200px;
-}
 .button, .button_Remove{
     background-color: #E5E5E5;
     border: none;

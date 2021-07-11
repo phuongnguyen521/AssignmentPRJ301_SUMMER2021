@@ -16,7 +16,7 @@
             <font color="red">
             Welcome ${sessionScope.USERNAME}
             </font>
-            <form action="logOut_Account">
+            <form action="logOutAccount">
                 <input type="submit" value="Sign Out" name="btAction" />
             </form>
         </c:if>
@@ -24,8 +24,7 @@
             <h2>Sorry, the server has encountered an error</h2>
             <br/>
             <br/>
-            <a href="shopping_servlet">Click here to shopping online</a><br/>
-            <a href="search_jsp">Click here to Search page</a>
+            <a href="shoppingServlet">Click here to shopping online</a><br/>
         </div>
     </body>
 </html>
