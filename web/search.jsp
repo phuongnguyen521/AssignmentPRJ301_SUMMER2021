@@ -16,10 +16,14 @@
     </head>
     <body>
         <jsp:include page="header.jsp"/>
-        <c:set var="SearchValueResult" value="${sessionScope.LASTSEARCHVALUE}"/>
-        <c:if test="${empty sessionScope.USERNAME}">
-            <c:set var="SearchValueResult" value=""/>
-        </c:if>
+        <c:choose>
+            <c:when test="${empty sessionScope.USERNAME}">
+                <c:set var="SearchValueResult" value=""/>
+            </c:when>
+            <c:otherwise>
+                 <c:set var="SearchValueResult" value="${sessionScope.LASTSEARCHVALUE}"/>
+            </c:otherwise>
+        </c:choose>
         <form action="searchAccount" class="search">
             <h1>Search Page</h1>
             Search Value <input type="text" name="txtSearchValue" 

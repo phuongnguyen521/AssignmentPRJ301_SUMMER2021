@@ -11,16 +11,18 @@
     <nav>
         <p>Welcome ${sessionScope.USERNAME}</p>
         <ul class="nav_link">
-            <c:if test="${empty sessionScope.USERNAME}">
-                <li>
-                    <a class="feature_link" href="login">Login</a>
-                </li>  
-            </c:if>
-            <c:if test="${not empty sessionScope.USERNAME}">
-                <li>
-                    <a class="feature_link" href="search">Search</a>
-                </li>
-            </c:if>
+            <c:choose>
+                <c:when test="${empty sessionScope.USERNAME}">
+                    <li>
+                        <a class="feature_link" href="login">Login</a>
+                    </li> 
+                </c:when>
+                <c:otherwise>
+                    <li>
+                        <a class="feature_link" href="search">Search</a>
+                    </li>
+                </c:otherwise>
+            </c:choose>
             <li>
                 <a class="feature_link" href="shoppingServlet">Shopping Online</a>
             </li>
