@@ -17,6 +17,9 @@
     <body>
         <jsp:include page="header.jsp"/>
         <c:set var="SearchValueResult" value="${sessionScope.LASTSEARCHVALUE}"/>
+        <c:if test="${empty sessionScope.USERNAME}">
+            <c:set var="SearchValueResult" value=""/>
+        </c:if>
         <form action="searchAccount" class="search">
             <h1>Search Page</h1>
             Search Value <input type="text" name="txtSearchValue" 
@@ -102,7 +105,7 @@
                                 <c:if test="${not empty error}">
                                     <c:if test="${error.username eq dto.username}">
                                         <tr>
-                                            <td>
+                                            <td colspan="8">
                                                 <font color="red">
                                                 ${error.passwordLenghErr}
                                                 </font>

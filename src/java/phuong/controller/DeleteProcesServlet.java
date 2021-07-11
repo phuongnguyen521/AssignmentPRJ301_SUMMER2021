@@ -27,8 +27,6 @@ public class DeleteProcesServlet extends HttpServlet {
     private final String CONFIRM_DELETE = "confirmDelete.jsp";
     private final String LOGOUT_SERVLET = "logOutAccount";
     private final String DELETE_ERROR = "deleteError.html";
-    private String username = "";
-    private String searchValue = "";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>

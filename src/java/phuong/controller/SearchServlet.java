@@ -48,6 +48,13 @@ public class SearchServlet extends HttpServlet {
         String button = request.getParameter("btAction");
         HttpSession session = request.getSession();
         try {
+            //checking if error password is exsited
+            if (!button.equals("Update")) {
+                session.removeAttribute("ERROR_PASS");
+            }
+            if (lastSearchValue.isEmpty()) {
+                session.setAttribute("LASTSEARCHVALUE", "");
+            }
             if (lastSearchValue.trim().length() > 0) {
                 RegistrationDAO dao = new RegistrationDAO();
                 dao.searchLastName(lastSearchValue);
@@ -55,10 +62,6 @@ public class SearchServlet extends HttpServlet {
                 dto = dao.getListDTO();
                 session.setAttribute("SEARCHRESULT", dto);
                 session.setAttribute("LASTSEARCHVALUE", lastSearchValue);
-                //checking if error password is exsited
-                if (!button.equals("Update")) {
-                    session.removeAttribute("ERROR_PASS");
-                }
             }
         } catch (NamingException ex) {
             ex.printStackTrace();

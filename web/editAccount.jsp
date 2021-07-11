@@ -15,6 +15,9 @@
     </head>
     <body>
         <c:set var="Errors" value="${requestScope.EDIT_ERROR}"/>
+        <c:if test="${empty sessionScope.USERNAME}">
+            <c:set var="INFORM" value="" />
+        </c:if>
         <jsp:include page="header.jsp"/>
         <div class="account_box">
             <h1>Edit Account</h1>
