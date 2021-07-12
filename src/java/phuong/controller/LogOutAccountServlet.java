@@ -38,7 +38,7 @@ public class LogOutAccountServlet extends HttpServlet {
             if (session == null) {
                 return;
             }// session is end
-            final Enumeration<String> atttributeNames = session.getAttributeNames();
+            Enumeration<String> atttributeNames = session.getAttributeNames();
             while (atttributeNames.hasMoreElements()) {
                 String nextElement = atttributeNames.nextElement();
                 session.removeAttribute(nextElement);
