@@ -20,7 +20,7 @@
         <h1>Shopping Online Page</h1>
         <c:set var="ERROR" value="${requestScope.SHOPPING_ERROR}"/>
         <c:if test="${empty ERROR}">
-            <c:set var="LIST" value="${requestScope.PRODUCT_LIST}"/>
+            <c:set var="LIST" value="${sessionScope.PRODUCT_LIST}"/>
             <c:if test="${empty LIST}">
                 Sorry, shop has nothing to display at present. 
             </c:if>
@@ -39,31 +39,33 @@
                     <tbody>
                         <c:forEach var="list" items="${LIST}" varStatus="counter">
                         <form action="addItemsToCartServlet">
-                            <tr>
-                                <td>
-                                    ${counter.count}
-                                    <input type="hidden" name="txtSku" value="${list.sku}" />
-                                </td>
-                                <td>
-                                    ${list.name}
-                                </td>
-                                <td>
-                                    <f:formatNumber var="price" 
-                                                    value="${list.price}" 
-                                                    minIntegerDigits="0"/>
-                                    ${price}
-                                </td>
-                                <td>
-                                    ${list.description}
-                                </td>
-                                <td>
-                                    ${list.quantity}
-                                </td>
-                                <td>
-                                    <input type="submit" value="Add" name="btAction" />
-                                    <input type="hidden" name="ItemsToCart" value="${list.sku}">
-                                </td>
-                            </tr>
+                            <c:if test="${list.quantity gt 0}">
+                                <tr>
+                                    <td>
+                                        ${counter.count}
+                                        <input type="hidden" name="txtSku" value="${list.sku}" />
+                                    </td>
+                                    <td>
+                                        ${list.name}
+                                    </td>
+                                    <td>
+                                        <f:formatNumber var="price" 
+                                                        value="${list.price}" 
+                                                        minIntegerDigits="0"/>
+                                        ${price}
+                                    </td>
+                                    <td>
+                                        ${list.description}
+                                    </td>
+                                    <td>
+                                        ${list.quantity}
+                                    </td>
+                                    <td>
+                                        <input type="submit" value="Add" name="btAction" />
+                                        <input type="hidden" name="ItemsToCart" value="${list.sku}">
+                                    </td>
+                                </tr>
+                            </c:if>
                         </form>
                     </c:forEach>
                 </tbody>

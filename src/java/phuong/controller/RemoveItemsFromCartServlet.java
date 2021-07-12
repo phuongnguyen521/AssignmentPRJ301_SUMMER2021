@@ -6,9 +6,7 @@
 package phuong.controller;
 
 import java.io.IOException;
-import java.sql.SQLException;
-import javax.naming.NamingException;
-import javax.servlet.RequestDispatcher;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import phuong.cart.CartObj;
 import phuong.product.ProductDAO;
+import phuong.product.ProductDTO;
 
 /**
  *
@@ -44,26 +43,20 @@ public class RemoveItemsFromCartServlet extends HttpServlet {
                 HttpSession session = request.getSession(false);
                 if (session != null) {
                     CartObj cart = (CartObj) session.getAttribute("CART");
-                    if (cart != null) {
+                    List<ProductDTO> list = (List<ProductDTO>) session.getAttribute("PRODUCT_LIST");
+                    if (cart != null & list != null) {
                         ProductDAO dao = new ProductDAO();
                         for (int i = 0; i < items.length; i++) {
                             int sku = Integer.parseInt(items[i]);
-                            int quantity = cart.getItems().get(sku).getQuantity();
-                            boolean result = dao.updateProduct(sku, "ADD", quantity);
-                            if (result){
-                                cart.removeItemFromCart(sku);
-                            } else {
-                                break;
-                            }
+                            int quantity = cart.getItems().get(sku).getQuantity() +
+                                    list.get(sku - 1).getQuantity();
+                            list.get(sku - 1).setQuantity(quantity);
+                            cart.removeItemFromCart(sku);
                         }
                         session.setAttribute("CART", cart);
                     }
                 }
             }
-        } catch (NamingException ex) {
-            log("RemoveItemsFromCart _Naming" + ex.getMessage());
-        } catch (SQLException ex) {
-            log("RemoveItemsFromCart _SQL" + ex.getMessage());
         } finally {
             response.sendRedirect(url);
         }

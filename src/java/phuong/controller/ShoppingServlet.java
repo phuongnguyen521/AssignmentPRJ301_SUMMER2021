@@ -7,6 +7,7 @@ package phuong.controller;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
@@ -14,6 +15,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import phuong.product.ProductDAO;
 import phuong.product.ProductDTO;
 import phuong.product.ProductErrors;
@@ -39,23 +41,26 @@ public class ShoppingServlet extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         String url = SHOPPING_PAGE;
-        List<ProductDTO> list = null;
         ProductErrors errors = null;
+        HttpSession session = request.getSession();
+        List<ProductDTO> list = (List<ProductDTO>) session.getAttribute("PRODUCT_LIST");
         try {
-            ProductDAO dao = new ProductDAO();
-            dao.loadProduct();
-            list = dao.getProduct();
-            request.setAttribute("PRODUCT_LIST", list);
+            if (list == null) {
+                ProductDAO dao = new ProductDAO();
+                dao.loadProduct();
+                list = dao.getProduct();
+                session.setAttribute("PRODUCT_LIST", list);
+            }
         } catch (NamingException ex) {
             log("ShoppingServlet _Naming" + ex.getMessage());
-            if (errors == null){
+            if (errors == null) {
                 errors = new ProductErrors();
             }
             errors.setNamingError("Error about Naming");
             request.setAttribute("SHOPPING_ERROR", errors);
         } catch (SQLException ex) {
             log("ShoppingServlet _SQL" + ex.getMessage());
-            if (errors == null){
+            if (errors == null) {
                 errors = new ProductErrors();
             }
             errors.setSqlError("Error about SQL");

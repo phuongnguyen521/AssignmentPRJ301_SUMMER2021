@@ -7,6 +7,8 @@ package phuong.controller;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.naming.NamingException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -25,7 +27,7 @@ import phuong.product.ProductDTO;
 public class AddItemsToCartServlet extends HttpServlet {
 
     private final String SHOPPING_ONLINE_ERROR = "shoppingOnlineError.html";
-    private final String SHOPPING_ONLINE = "shoppingServlet";
+    private final String SHOPPING_ONLINE = "shopping";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -36,6 +38,14 @@ public class AddItemsToCartServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
+    private boolean checkQuantity(List<ProductDTO> list, int sku) {
+        boolean result = false;
+        if (list.get(sku).getQuantity() > 0) {
+            result = true;
+        }
+        return result;
+    }
+
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
@@ -52,13 +62,28 @@ public class AddItemsToCartServlet extends HttpServlet {
                 ProductDAO dao = new ProductDAO();
                 ProductDTO dto = dao.getProduct(items);
                 if (dto != null) {
-                    String sku = String.valueOf(items);
-                    cart.addItemtoCart(sku, dto);
-                    session.setAttribute("CART", cart);
-                    boolean result = dao.updateProduct(items, "DECREASE",1);
+                    List<ProductDTO> list = (ArrayList<ProductDTO>) session.getAttribute("PRODUCT_LIST");
+                    boolean result = cart.checkExistedProduct(items);
                     if (result) {
-                        url = SHOPPING_ONLINE;
+                        if (list.get(items - 1).getQuantity() > 0) {
+                            cart.addItemtoCart(items, dto);
+                            int quantity = list.get(items - 1).getQuantity() - 1;
+                            list.get(items - 1).setQuantity(quantity);
+                        }
+                    } else {
+                        cart.addItemtoCart(items, dto);
+                        int quantity = list.get(items - 1).getQuantity() - 1;
+                        list.get(items - 1).setQuantity(quantity);
+                        int sku = list.get(items - 1).getSku();
+                        quantity = list.get(items- 1).getQuantity();
                     }
+                    session.setAttribute("CART", cart);
+                    session.setAttribute("PRODUCT_LIST", list);
+                    url = SHOPPING_ONLINE;
+//                    boolean result = dao.updateProduct(items, "DECREASE", 1);
+//                    if (result) {
+//                        url = SHOPPING_ONLINE;
+//                    }
                 }
             }
 
@@ -67,8 +92,11 @@ public class AddItemsToCartServlet extends HttpServlet {
         } catch (SQLException ex) {
             log("AddItemsToCart _SQL" + ex.getMessage());
         } finally {
-            RequestDispatcher rd = request.getRequestDispatcher(url);
-            rd.forward(request, response);
+            if (url.contains("html")) {
+                RequestDispatcher rd = request.getRequestDispatcher(url);
+                rd.forward(request, response);
+            }
+            response.sendRedirect(url);
         }
     }
 

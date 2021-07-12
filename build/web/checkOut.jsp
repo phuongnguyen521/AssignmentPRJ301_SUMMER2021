@@ -62,7 +62,7 @@
                                         ${total}
                                         <c:set var="totalOrder" 
                                                value="${Double.parseDouble(totalOrder) 
-                                                        + value.getTotal()}"/>
+                                                        + value.getTotal() * value.getQuantity()}"/>
                                     </td>
                                 </tr>
                             </c:forEach>

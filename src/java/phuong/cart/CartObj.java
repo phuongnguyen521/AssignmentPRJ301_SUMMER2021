@@ -21,28 +21,34 @@ public class CartObj implements Serializable {
     public Map<Integer, ProductDTO> getItems() {
         return items;
     }
-
-    public void addItemtoCart(String sku, ProductDTO dto) {
+    
+    public boolean checkExistedProduct(int sku){
+        boolean result = false;
+        if (this.items == null){
+            return result;
+        } 
+        result = this.items.containsKey(sku);
+        return result;
+    }
+    
+    
+    public void addItemtoCart(int sku, ProductDTO dto) {
         //1.check Item's item is existed
-        if (sku == null) {
+        if (sku <= 0) {
             return;
         }
-        if (sku.trim().isEmpty()) {
-            return;
-        }
-        int id = Integer.parseInt(sku);
         //2. item is existed
         if (this.items == null) {
             this.items = new HashMap<>();
         }
         //3. when item is existed, checking existed id
         int quantity = 1;
-        if (this.items.containsKey(id)) {
-            quantity = this.items.get(id).getQuantity() + 1;
+        if (this.items.containsKey(sku)) {
+            quantity = this.items.get(sku).getQuantity() + 1;
             dto.setQuantity(quantity);
         }
         //4.update items
-        this.items.put(id, dto);
+        this.items.put(sku, dto);
     }
 
     public void removeItemFromCart(int sku) {

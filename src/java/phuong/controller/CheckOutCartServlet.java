@@ -19,6 +19,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.jasper.tagplugins.jstl.core.ForEach;
 import phuong.cart.CartObj;
 import phuong.orderDetails.OrderDetailsDAO;
+import phuong.product.ProductDAO;
 import phuong.product.ProductDTO;
 
 /**
@@ -32,13 +33,16 @@ public class CheckOutCartServlet extends HttpServlet {
 
     private boolean createOrderDetail(CartObj cart, int orderDetailId, String username) {
         boolean result = true;
-        OrderDetailsDAO dao = new OrderDetailsDAO();
+        OrderDetailsDAO daoOrder = new OrderDetailsDAO();
+        ProductDAO daoProduct = new ProductDAO();
         Set<Integer> set = cart.getItems().keySet();
         try {
-            for (Integer sku : set) {
+            for (Integer key : set) {
+                int sku = key;
                 ProductDTO dto = cart.getProductFromCart(sku);
                 if (dto != null) {
-                    result = dao.checkOutOrder(dto, orderDetailId, username);
+                    result = daoOrder.checkOutOrder(dto, orderDetailId, username);
+                    result = daoProduct.updateProduct(sku, "DECREASE", dto.getQuantity());
                     if (result == false) {
                         break;
                     }
