@@ -27,6 +27,7 @@ public class PhuongServlet extends HttpServlet {
     private final String LOGIN_SERVLET = "loginServlet";
     private final String LOG_OUT = "logOutAccount";
     private final String SEARCH_PAGE = "search";
+    private final String SHOPPING_PAGE = "shoppingServlet";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -63,7 +64,9 @@ public class PhuongServlet extends HttpServlet {
                 url = LOG_OUT;
             } else if (button.equals("Search")){
                 url = SEARCH_PAGE;
-            }         
+            } else if (button.equals("Shopping")){
+                url = SHOPPING_PAGE;
+            }    
         } catch (NamingException ex) {
             log("PhuongServlet _Naming" + ex.getMessage());
         } catch (SQLException ex) {

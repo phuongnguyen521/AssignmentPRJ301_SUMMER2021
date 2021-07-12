@@ -44,8 +44,16 @@ public class LoginServlet extends HttpServlet {
         HttpSession session = request.getSession();
         String USERNAME = (String) session.getAttribute("USERNAME");
         String url = INVALID_PAGE;
+        session.removeAttribute("MSG");
         try {
             if (USERNAME != null) {
+                RegistrationDAO dao = new RegistrationDAO();
+                String result = dao.checkLogin(username, password);
+                if (result.equals(USERNAME)){
+                    String msg = "You are logged in as " + USERNAME;
+                    session.setAttribute("MSG", msg);
+                }
+                session.setAttribute("USERNAME", USERNAME);
                 url = CONFIRM_LOGOUT;
             } else {
                 RegistrationDAO dao = new RegistrationDAO();
@@ -53,7 +61,6 @@ public class LoginServlet extends HttpServlet {
                 if (!result.isEmpty()) {
                     url = SEARCH_PAGE;
                     session.setAttribute("USERNAME", result);
-
                     //create account cookie
                     Cookie cookie = new Cookie(username, password);
                     cookie.setMaxAge(-1); // cookie exists until close browser
