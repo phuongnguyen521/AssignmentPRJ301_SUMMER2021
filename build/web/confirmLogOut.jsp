@@ -15,29 +15,33 @@
     </head>
     <body>
         <c:if test="${not empty sessionScope.USERNAME}">
-        <div class="account_box">
-            <form action="ConfirmLogOut">
-                <c:choose>
-                    <c:when test="${not empty sessionScope.MSG}">
-                        <p>${sessionScope.MSG}</p>
-                        <input type="submit" value="Shopping" name="btAction" />
-                    </c:when>
-                    <c:otherwise>
-                        <p>You are logged in another account</p>
-                        <p>Click "Log Out" if you want to login by your account</p>
-                        <input type="submit" value="Log Out" name="btAction" />
-                    </c:otherwise>
-                </c:choose>
-                <input type="submit" value="Search" name="btAction" />
-            </form>
-        </div>
+            <div class="account_box">
+                <form action="ConfirmLogOut">
+                    <c:choose>
+                        <c:when test="${not empty sessionScope.MSG}">
+                            <p>${sessionScope.MSG}</p>
+                            <input type="submit" value="Shopping" name="btAction" />
+                        </c:when>
+                        <c:otherwise>
+                            <p>You are logged in another account</p>
+                            <p>Click "Log Out" if you want to login by your account</p>
+                            <input type="submit" value="Log Out" name="btAction" />
+                        </c:otherwise>
+                    </c:choose>
+                    <input type="submit" value="Search" name="btAction" />
+                </form>
+            </div>
         </c:if>
         <c:if test="${empty sessionScope.USERNAME}">
-            <div class="account_box">
-                <h3>You are logged out</h3>
-                <input type="submit" value="Login" name="btAction" />
-                <input type="submit" value="Shopping" name="btAction" />
-            </div>
+                <div class="account_box">
+                    <h3>You are logged out</h3>
+                    <form action="login">
+                        <input type="submit" value="Login" name="btAction" />
+                    </form>
+                    <form action="shoppingServlet">
+                        <input type="submit" value="Shopping" name="btAction" />
+                    </form>
+                </div>
         </c:if>
     </body>
 </html>

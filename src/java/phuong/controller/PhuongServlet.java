@@ -6,10 +6,8 @@
 package phuong.controller;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.SQLException;
 import javax.naming.NamingException;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
@@ -43,6 +41,7 @@ public class PhuongServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         String url = LOGIN_PAGE;
         String button = request.getParameter("btAction");
+        String buttonConfirm = request.getParameter("btnAction");
         try {
             if (button == null) {
                 Cookie[] cookies = request.getCookies();
@@ -52,21 +51,21 @@ public class PhuongServlet extends HttpServlet {
                         String password = cooky.getValue();
                         RegistrationDAO dao = new RegistrationDAO();
                         String result = dao.checkLogin(username, password);
-                        if (!result.isEmpty()){
+                        if (!result.isEmpty()) {
                             url = LOGIN_SERVLET;
                             break;
                         } // end if 
                     } // end traversal of cookies
                 } // if cookies is existed
-            } else if (button.equals("Login")){
+            } else if (button.equals("Login")) {
                 url = LOGIN_SERVLET;
-            } else if (button.equals("Log Out")){
+            } else if (button.equals("Log Out")) {
                 url = LOG_OUT;
-            } else if (button.equals("Search")){
+            } else if (button.equals("Search")) {
                 url = SEARCH_PAGE;
-            } else if (button.equals("Shopping")){
+            } else if (button.equals("Shopping")) {
                 url = SHOPPING_PAGE;
-            }    
+            }
         } catch (NamingException ex) {
             log("PhuongServlet _Naming" + ex.getMessage());
         } catch (SQLException ex) {
